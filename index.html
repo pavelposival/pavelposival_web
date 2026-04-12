@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pavel Pošíval | Precizní 3D dokumentace</title>
+    <meta name="description" content="Specialista na 3D fotogrammetrii, digitální dvojčata a precizní zaměřování pro architekty a památkáře.">
+    
+    <!-- Google Fonts: Inter pro čistý B2B vzhled, JetBrains Mono pro technické detaily -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS PROMĚNNÉ --- */
+        :root {
+            --bg-base: #09090b;
+            --bg-surface: #18181b;
+            --bg-surface-hover: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --accent: #00e5ff; /* Technická kyanová (laser scan) */
+            --border-color: #27272a;
+            
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --container-width: 1200px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- RESET & ZÁKLAD --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            /* Jemný technický grid na pozadí */
+            background-image: 
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 100px 100px;
+            background-position: center top;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        h1, h2, h3 {
+            font-weight: 500;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        /* --- HLAVIČKA (NAVBAR) --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 64px;
+            background: rgba(9, 9, 11, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .container {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .logo::before {
+            content: '';
+            display: block;
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* --- HERO SEKCE --- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 64px;
+            /* Zástupný obrázek evokující mračno bodů / architekturu */
+            background: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2500&auto=format&fit=crop') center/cover no-repeat;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.7) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            padding: 0.25rem 0.75rem;
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 600px;
+        }
+
+        /* --- SPOLEČNÉ STYLY SEKACÍ --- */
+        section {
+            padding: 8rem 0;
+            position: relative;
+            z-index: 2;
+            background: var(--bg-base);
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        /* --- CO DĚLÁM --- */
+        .about-text {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            border-left: 2px solid var(--accent);
+            padding-left: 2rem;
+        }
+
+        .about-text strong {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* --- PRO KOHO A CO DODÁVÁM --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 3rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card h3::before {
+            content: '[ ]';
+            font-family: var(--font-mono);
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .card ul {
+            list-style: none;
+        }
+
+        .card ul li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .card ul li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            font-family: var(--font-mono);
+            color: var(--accent);
+        }
+
+        /* --- UKÁZKA 3D MODELU --- */
+        .sketchfab-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Zástupný design pro 3D model */
+        .sketchfab-placeholder {
+            text-align: center;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        .wireframe-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 10s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 40px; }
+        }
+
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            background: rgba(0, 229, 255, 0.1);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            z-index: 2;
+        }
+
+        .play-btn:hover {
+            background: var(--accent);
+            color: var(--bg-base);
+        }
+
+        .play-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            margin-left: 4px;
+        }
+
+        /* --- KONTAKT --- */
+        .contact-info p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .tech-note {
+            background: var(--bg-surface);
+            border-left: 2px solid var(--accent);
+            padding: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input, textarea {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-surface-hover);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        button {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 1rem 2rem;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            align-self: flex-start;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        button:hover {
+            background: var(--accent);
+            color: var(--bg-base);
+        }
+
+        /* --- PATIČKA --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            background: var(--bg-base);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- RESPONZIVITA --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Pro mobil by zde bylo hamburger menu */
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 5rem 0;
+            }
+
+            .card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HLAVIČKA -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Pavel Pošíval</a>
+            <ul class="nav-links">
+                <li><a href="#nabidka">Nabídka</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#o-mne">O mně</a></li>
+                <li><a href="#kontakt">Kontakt</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO SEKCE -->
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <span class="tech-badge">Scan Data // 01</span>
+            <h1>Precizní 3D dokumentace a digitální dvojčata</h1>
+            <p>Specializuji se na detailní zaměřování exteriérů, historických objektů a soch s milimetrovou přesností pro potřeby architektů, projektantů a památkářů.</p>
+        </div>
+    </header>
+
+    <!-- CO DĚLÁM -->
+    <section id="nabidka">
+        <div class="container">
+            <div class="section-header">
+                <h2>Technologie a přístup</h2>
+            </div>
+            <p class="about-text">
+                Pro dosažení maximální kvality a přesnosti <strong>kombinuji leteckou fotogrammetrii s detailním pozemním skenováním</strong>. Tento synergický přístup eliminuje slepá místa, zajišťuje ostré textury i v těžko dostupných oblastech a garantuje geometrickou věrnost výsledného modelu. Žádné kompromisy, pouze exaktní data.
+            </p>
+        </div>
+    </section>
+
+    <!-- PRO KOHO A CO DODÁVÁM -->
+    <section id="sluzby">
+        <div class="container">
+            <div class="section-header">
+                <h2>Pro koho a co dodávám</h2>
+                <p>Výstupy přizpůsobuji konkrétním softwarovým a procesním požadavkům vašich projektů.</p>
+            </div>
+            
+            <div class="grid-2">
+                <!-- Karta 1 -->
+                <div class="card">
+                    <h3>Pro projektanty a architekty</h3>
+                    <ul>
+                        <li>Optimalizované 3D modely s fotorealistickou texturou (OBJ, FBX)</li>
+                        <li>Hustá mračna bodů pro CAD/BIM systémy (LAS, E57, RCP)</li>
+                        <li>Vysoce detailní ortopohledy fasád a střech</li>
+                        <li>Vektorizace a tvorba řezů z naměřených dat</li>
+                    </ul>
+                </div>
+
+                <!-- Karta 2 -->
+                <div class="card">
+                    <h3>Pro správce budov a památkáře</h3>
+                    <ul>
+                        <li>Kompletní pasportizace stávajícího stavu objektů</li>
+                        <li>2D výkresy v přesném měřítku (půdorysy, pohledy)</li>
+                        <li>Detekce a dokumentace strukturálních poruch</li>
+                        <li>Technické zprávy o metodice vzniku a přesnosti modelu</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UKÁZKA 3D MODELU -->
+    <section id="portfolio">
+        <div class="container">
+            <div class="section-header">
+                <h2>Interaktivní 3D model</h2>
+                <p>Ukázka detailního fotogrammetrického modelu historického objektu.</p>
+            </div>
+
+            <!-- Kontejner připravený pro Sketchfab iframe -->
+            <div class="sketchfab-wrapper">
+                <div class="wireframe-grid"></div>
+                <div class="sketchfab-placeholder">
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                    <p>Načíst 3D prohlížeč (Sketchfab)</p>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.5;">Zde bude vložen kód &lt;iframe&gt;</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KONTAKT -->
+    <section id="kontakt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Zahájit spolupráci</h2>
+            </div>
+
+            <div class="grid-2">
+                <div class="contact-info">
+                    <p>Potřebujete přesná data pro váš další projekt? Napište mi detaily o objektu a požadovaných výstupech. Obratem se vám ozvu s návrhem postupu a cenovou kalkulací.</p>
+                    
+                    <div class="tech-note">
+                        <span style="color: var(--text-main); display: block; margin-bottom: 0.5rem;">Geodetická návaznost:</span>
+                        Veškerá data standardně dodávám georeferencovaná v souřadnicovém systému <strong>S-JTSK</strong> a výškovém systému <strong>Bpv</strong>, připravená pro okamžité vložení do vašich projektů.
+                    </div>
+                </div>
+
+                <form class="contact-form" onsubmit="event.preventDefault();">
+                    <div class="form-group">
+                        <label for="name">Jméno / Společnost</label>
+                        <input type="text" id="name" required placeholder="Ing. Jan Novák">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" required placeholder="architekt@studio.cz">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Specifikace poptávky</label>
+                        <textarea id="message" required placeholder="Dobrý den, poptávám zaměření fasády historické budovy v centru..."></textarea>
+                    </div>
+                    
+                    <button type="submit">Odeslat poptávku</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- PATIČKA -->
+    <footer>
+        <div class="container">
+            &copy; 2024 Pavel Pošíval. Všechna práva vyhrazena. | Precizní 3D dokumentace.
+        </div>
+    </footer>
+
+</body>
+</html>
