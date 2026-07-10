@@ -4,45 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pavel Pošíval | 3D Dokumentace</title>
-    <!-- Toto je to kouzlo, které udělá web hezkým bez programování -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        /* Základní vzhled */
+        body { margin: 0; padding: 0; }
+        
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px; /* Vnitřní okraje pro text */
+        }
+
+        .hero {
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('hero.webp');
+            background-size: cover;
+            background-position: center;
+            height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px; /* Přidáno, aby text v hero nebyl nalepený na krajích */
+        }
+
+        .profilovka { border-radius: 8px; width: 100%; margin-bottom: 2rem; }
+
+        /* MOBILNÍ OPTIMALIZACE: tady se děje to kouzlo */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem !important; } /* Menší nadpisy na mobilu */
+            h2 { font-size: 1.5rem !important; }
+            main { padding: 15px; } /* Více místa po stranách pro text */
+            p, li { font-size: 0.95rem; } /* Trochu menší, čitelnější text */
+        }
+    </style>
 </head>
 <body>
 
-    <main class="container">
-        <header>
-            <h1>Precizní 3D dokumentace pro vaše projekty</h1>
-            <p>Pomáhám architektům, památkářům i majitelům nemovitostí k přesným datům. Žádné prodejní řeči, jen technická preciznost.</p>
-        </header>
+    <header class="hero">
+        <h1>Precizní 3D dokumentace</h1>
+        <p>Pomáhám architektům a firmám získat přesná data.</p>
+    </header>
 
+    <main>
         <section id="o-mne">
-            <h2>Kdo jsem</h2>
-            <p>Nejsem obchodník. Jsem technik, který věří v poctivou práci. Mým cílem není vám něco prodat, ale dodat vám podklady, které přesně odpovídají realitě. Pokud hledáte někoho, kdo za objektivem a ve softwaru tráví stovky hodin, abyste vy měli v ruce perfektní výsledek, jsme na stejné vlně.</p>
+            <h2>Nejsem obchodník, jsem technik</h2>
+            <p>Možná vám nebudu vyprávět prodejní vize, ale dodám vám podklady, na které je spoleh. Fotogrammetrii se věnuji 4 roky a v geodézii mám za sebou 6 let praxe. Pokud hledáte někoho, kdo řeší technickou preciznost a nehledá zkratky, jsme na stejné vlně.</p>
+            <img src="tvoje-fotka-pri-praci.webp" alt="Pavel Pošíval při práci" class="profilovka">
         </section>
 
         <section id="sluzby">
-            <h2>Co nabízím</h2>
+            <h2>Co přesně dělám</h2>
             <ul>
-                <li>3D Skenování a digitální dvojčata</li>
-                <li>2D Ortophotos a technické podklady</li>
-                <li>Virtuální prohlídky prostor</li>
+                <li><strong>3D Skenování:</strong> Digitální dvojčata budov a objektů s vysokou přesností.</li>
+                <li><strong>2D Ortophotos:</strong> Přesné plošné podklady, které slouží jako věrný obraz reality.</li>
+                <li><strong>Virtuální prohlídky:</strong> Moderní prezentace prostor pro firmy i památky.</li>
             </ul>
         </section>
 
-        <section id="lokality">
-            <h2>Kde působím</h2>
-            <p>Své služby poskytuji v regionu Střední Čechy:</p>
-            <ul>
-                <li>Poděbrady, Nymburk, Kolín</li>
-                <li>Městec Králové, Český Brod a okolí</li>
-            </ul>
+        <section id="ukazky">
+            <h2>Ukázky z praxe</h2>
+            <div class="grid">
+                <article>
+                    <img src="sken-budovy.webp" alt="3D sken budovy">
+                    <p><small>3D model fasády</small></p>
+                </article>
+                <article>
+                    <img src="ortofoto-plan.webp" alt="Ortofoto plán">
+                    <p><small>2D ortophoto podklad</small></p>
+                </article>
+                <article>
+                    <img src="prohlidka-interier.webp" alt="Virtuální prohlídka">
+                    <p><small>Virtuální prohlídka</small></p>
+                </article>
+            </div>
         </section>
 
         <section id="kontakt">
-            <h2>Kontaktujte mě</h2>
-            <p>Pojďme se domluvit na vašem projektu.</p>
-            <p><strong>Telefon:</strong> +420 737 032 817</p>
-            <p><strong>E-mail:</strong> posival3D@gmail.com</p>
+            <h2>Pojďme se domluvit</h2>
+            <p>Máte projekt, který potřebuje přesnou dokumentaci? Ozvěte se mi:</p>
+            <p>📞 +420 737 032 817<br>📧 posival3D@gmail.com</p>
         </section>
     </main>
 
